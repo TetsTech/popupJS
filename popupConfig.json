@@ -1,0 +1,17 @@
+{
+    "gamePopup": {
+      "title": "Que tal ganhar um descontão?",
+      "subtitle": "Preencha o formulário e ganhe um cupom de desconto de 20% no site todo!",
+      "game": "caca-niquel.png",
+      "formFields": 4,
+      "consentCheckbox": true
+    },
+    "videoPopup": {
+      "title": "Que tal ganhar um descontão?",
+      "subtitle": "Assista ao vídeo e ganhe um cupom de desconto de 20% no site todo!",
+      "videoUrl": "videoPopup.mp4",
+      "formFields": 4,
+      "consentCheckbox": false
+    }
+  }
+  

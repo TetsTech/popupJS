@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="popup" content="width=device-width, initial-scale=1.0">
+  <title>Promoção!</title>
+
+  
+  <style>
+   .popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #5a0000;
+  padding: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 500px;
+  margin: auto;
+  height: auto;
+  max-height: 85%;
+  border-radius: 30px;
+  text-decoration: #ffffff;
+}
+
+.popup img {
+  max-width: 60%;
+  height: auto;
+  animation: casino 2s;
+}
+
+@keyframes casino {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(-5deg); }
+  75% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.popup video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 30px;
+}
+
+.popup h1 {
+  color: #ffffff;
+}
+
+.popup h3 {
+  color: #ffffff;
+}
+
+.popup form {
+  margin-top: 20px;
+  color: aliceblue;
+  text-decoration: solid;
+  margin-bottom: 20px;
+}
+
+.popup label {
+  display: block;
+  margin-bottom: 10px;
+  border-color: #faf7f7;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="select"] {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 2px solid white;
+  border-radius: 10px;
+  color: white;
+  background-color: transparent;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="select"]:focus {
+  border-color: #ff0000;
+  outline: none;
+}
+
+.popup input[type="submit"],
+.popup button {
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 30px;
+  margin-top: 20px;
+}
+
+.popup .consent-checkbox {
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 1500px) {
+  .popup {
+    overflow: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div v-if="currentPopup === 'game'">
+      <div class="popup">
+        <h1>{{ gamePopup.title }}</h1>
+        <h3>{{ gamePopup.subtitle }}</h3>
+        <img :src="gamePopup.game" alt="Caça-Níquel" />
+        <form>
+          <template v-for="field in gamePopup.formFields">
+            <label>{{ getFieldLabel(field) }}: <input type="text" /></label>
+          </template>
+          <template v-if="gamePopup.consentCheckbox">
+            <label><input type="checkbox" class="consent-checkbox" /> Concordo com a coleta de dados</label>
+          </template>
+          <input type="submit" value="Enviar" /> <br>
+          <button @click="closePopup">Fechar</button>
+        </form>
+      </div>
+    </div>
+
+    <div v-if="currentPopup === 'video'">
+      <div class="popup">
+        <h1>{{ videoPopup.title }}</h1>
+        <h3>{{ videoPopup.subtitle }}</h3>
+        <video :src="videoPopup.videoUrl" controls autoplay muted loop>
+          <object>
+            <embed :src="videoPopup.videoUrl" type="application/x-shockwave-flash" 
+            allowfullscreen="false" allowscriptaccess="always">  		
+          </object>
+          Formato não suportado  
+        </video>
+        <form>
+          <template v-for="field in videoPopup.formFields">
+            <label>{{ getFieldLabel(field) }}: <input type="text"/></label>
+          </template>
+          <template v-if="videoPopup.consentCheckbox">
+            <label><input type="checkbox" class="consent-checkbox" /> Concordo com a coleta de dados</label>
+          </template>
+          <input  class="submit" type="submit" value="Enviar" /> <br>
+          <button @click="closePopup">Fechar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        currentPopup: '',
+        gamePopup: {},
+        videoPopup: {}
+      },
+      
+      mounted() {
+        this.loadPopupsFromJSON();
+        this.randomlySelectPopup();    
+      },
+     
+        methods: {
+        
+        randomlySelectPopup() {
+      const randomIndex = Math.floor(Math.random() * 2);
+
+      if (randomIndex === 0) {
+        this.currentPopup = 'game';
+      } else {
+        this.currentPopup = 'video';
+        }
+        },
+
+         loadPopupsFromJSON() {
+            fetch('popupConfig.json')
+                .then(response => response.json())
+                .then(data => {
+             this.gamePopup = data.gamePopup;
+            this.videoPopup = data.videoPopup;
+             }).       
+             
+        catch(error => {
+        console.error('Erro ao carregar o arquivo JSON:', error);
+         })},
+
+
+        getFieldLabel(field){
+          switch (field) {
+            case 1:
+              return "Email";
+            case 2:
+              return "Nome";
+            case 3:
+              return "Número de Celular";
+            case 4:
+              return "Gênero";
+            default:
+              return "";
+          }
+        },
+
+        closePopup() {
+          this.currentPopup = '';
+        },
+       },
+    });
+  </script>
+</body>
+</html>
